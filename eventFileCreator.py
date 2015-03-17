@@ -7,6 +7,7 @@ conscientious = '../test/event2.pl'
 totalNumNodes = 25
 # The following generally variables represent from the point of flooding. Conscientious must be done accordingly.
 availableSol = (('type2','a',30),('type3','b',30))
+# In case of 's' and 'p' below the preceding numbers denotes number of 's' or 'p' for each type in order
 pattern = (('i',),(3,2,'s'),(3,2,'p'))
 timeGaps = (0,4000,1000)
 originTime = 0
