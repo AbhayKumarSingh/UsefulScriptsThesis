@@ -40,7 +40,7 @@ class SheetReader:
 	def cleanup( self ):
 		self.filehandle.close()
 
-class FloodAnalysis:
+class CommonValStrings:
 	eventCol = 4
 	timeCol = 2
 	initializedString = 'Initialized values'
@@ -50,54 +50,62 @@ class FloodAnalysis:
 	foundSolutionAtString = 'Solution found for'
 	receivedSolutionAtString = 'Solution received at'
 
-	def __init__( self, sheetReader ):
-		self.sheet = sheetReader
-		self.runList = self.runRanges()	#when in consistent state each element will have component firstRow and lastRowEx
+class Run:
+	coStr = CommonValStrings()
+	def __init__(self, sheetH, first, lastEx):
+		self.sheet = sheetH
+		self.firstRow = first
+		self.lastRowEx = lastEx
 
 	# genWaitingTimesInRun fun has to be tested for different types of prob
 	# is not tested till now
-	def genWaitingTimesInRun( self, run,
+	def genWaitingTimesInRun( self,
 			nodeCol = 5,
 			proStartTypeCol = 6,
 			solReceiTypeCol = 8 ):
 		# For each of the prob nodes in the list (gen)
 		for probRowIndex, probRow in self.sheet.genStringRowIndicesInRange(
-				self.problemStartedAtString,
-				self.eventCol,
-				run['firstRow'], run['lastRowEx'] ):
+				self.coStr.problemStartedAtString,
+				self.coStr.eventCol,
+				self.firstRow, self.lastRowEx ):
 			# search the solution received row after the row prob started
 			for solRowIndex, solRow in self.sheet.genStringRowIndicesInRange(
-					self.receivedSolutionAtString,
-					self.eventCol,
-					probRowIndex + 1, run['lastRowEx']):
+					self.coStr.receivedSolutionAtString,
+					self.coStr.eventCol,
+					probRowIndex + 1, self.lastRowEx):
 				if (solRow[nodeCol] == probRow[nodeCol]
 				and solRow[solReceiTypeCol] == probRow[proStartTypeCol]) :
 					actualSol = solRow
 					break;
 			# get the diff in time
-			waitingTime = float(actualSol[self.timeCol]) - float(probRow[self.timeCol])
+			waitingTime = float(actualSol[self.coStr.timeCol]) - float(probRow[self.coStr.timeCol])
 			yield probRow[nodeCol], waitingTime
 			# append (create) a list of this diff along with nodes
 
 	# averageWaitingTimeOfRun may not be that usefull as a parameter
-	def averageWaitingTimeOfRun( self, run ):
+	def averageWaitingTimeOfRun( self ):
 		# The following implementation can be improved from memory point of view
-		return mean(waitTime for ignore, waitTime in self.genWaitingTimesInRun( run ))
+		return mean(waitTime for ignore, waitTime in self.genWaitingTimesInRun())
+
+class FloodAnalysis:
+	coStr = CommonValStrings()
+	def __init__( self, sheetReader ):
+		self.sheet = sheetReader
+		self.runList = self.runRanges()	#when in consistent state each element will have component firstRow and lastRowEx
 
 	def printRunList( self ):
 		for run in self.runList:
-			print( run['firstRow'], run['lastRowEx'] )
+			print( run.firstRow, run.lastRowEx )
 
 	def listInitRowIndices( self ):
 		#scan throughout the file and find times and index of init
 		#Note that the range is from 1 since 0th line is not of much use
-		# return [i for i in range(1,self.sheet.totalNumRows) if self.sheet.retCell(i,self.eventCol) == self.initializedString]
 		return [
 			i
 			for i, ignore
 			in self.sheet.genStringRowIndicesInRange(
-				self.initializedString,
-				self.eventCol,
+				self.coStr.initializedString,
+				self.coStr.eventCol,
 				1, self.sheet.totalNumRows
 			)
 		]
@@ -116,18 +124,22 @@ class FloodAnalysis:
 			start = lis[i] + 1
 			endEx = lis[i+1] if i < len(lis) - 1 else self.lastRunLastLimit()
 			#create objects or dictionary and append in list member
-			templis.append( dict( firstRow = start, lastRowEx = endEx ) )
+			templis.append( Run( self.sheet, start, endEx ) )
 		return templis
 
 	def cleanup( self ):
+		# Even though setting runList to None does not do much to avoid
+		# illegal access of Run objects
+		self.runList = None
 		self.sheet.cleanup()
 
 def main():
 	floana = FloodAnalysis(SheetReader( 'data.csv' ))
 	# floana.printRunList()
-	for tup in floana.genWaitingTimesInRun(floana.runList[0]) :
+	floana.printRunList()
+	for tup in floana.runList[0].genWaitingTimesInRun() :
 		print( tup )
-	print( floana.averageWaitingTimeOfRun(floana.runList[0]))
+	print( floana.runList[0].averageWaitingTimeOfRun())
 	floana.cleanup()
 
 def main2():
