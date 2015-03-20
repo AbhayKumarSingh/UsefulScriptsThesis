@@ -87,6 +87,38 @@ class Run:
 		# The following implementation can be improved from memory point of view
 		return mean(waitTime for ignore, waitTime in self.genWaitingTimesInRun())
 
+	def overallIntraNodeCompInRun( self ):
+		return sum(
+			1
+			for ignored1, ignored2
+			in self.sheet.genStringRowIndicesInRange(
+				self.coStr.intranodeCalculationString,
+				self.coStr.eventCol,
+				self.firstRow, self.lastRowEx
+			)
+		)
+
+	def overallUsefulIntraNodeCompInRun( self ):
+		# May be to be overridden by subclasses
+		# In case of flooding it is like calling overallIntraNodeCompInRun
+		pass
+
+	def overallInterNodeCommInRun( self ):
+		return sum(
+			1
+			for ignored1, ignored2
+			in self.sheet.genStringRowIndicesInRange(
+				self.coStr.packetSentFromString,
+				self.coStr.eventCol,
+				self.firstRow, self.lastRowEx
+			)
+		)
+
+	def overallUsefulInterNodeCommInRun( self ):
+		# May be to be overridden by subclasses
+		# In case of flooding it is like calling overallInterNodeCommInRun
+		pass
+
 class FloodAnalysis:
 	coStr = CommonValStrings()
 	def __init__( self, sheetReader ):
@@ -136,10 +168,11 @@ class FloodAnalysis:
 def main():
 	floana = FloodAnalysis(SheetReader( 'data.csv' ))
 	# floana.printRunList()
-	floana.printRunList()
-	for tup in floana.runList[0].genWaitingTimesInRun() :
-		print( tup )
-	print( floana.runList[0].averageWaitingTimeOfRun())
+	# floana.printRunList()
+	# for tup in floana.runList[0].genWaitingTimesInRun() :
+	# 	print( tup )
+	# print( floana.runList[0].averageWaitingTimeOfRun())
+	print( floana.runList[0].overallInterNodeCommInRun())
 	floana.cleanup()
 
 def main2():
