@@ -119,7 +119,7 @@ class Run:
 		# In case of flooding it is like calling overallInterNodeCommInRun
 		pass
 
-class FloodAnalysis:
+class Analysis:
 	coStr = CommonValStrings()
 	def __init__( self, sheetReader ):
 		self.sheet = sheetReader
@@ -166,7 +166,7 @@ class FloodAnalysis:
 		self.sheet.cleanup()
 
 def main():
-	floana = FloodAnalysis(SheetReader( 'data.csv' ))
+	floana = Analysis(SheetReader( 'data.csv' ))
 	# floana.printRunList()
 	# floana.printRunList()
 	# for tup in floana.runList[0].genWaitingTimesInRun() :
