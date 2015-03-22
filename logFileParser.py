@@ -57,6 +57,12 @@ class Run:
 		self.firstRow = first
 		self.lastRowEx = lastEx
 
+	@staticmethod
+	def factory( sheet, first, lastEx, typ ):
+		if typ == 'FloodRun': return FloodRun(sheet, first, lastEx)
+		if typ == 'ConsRun': return ConsRun(sheet, first, lastEx)
+		print( 'something wrong in Run factory' )
+
 	# genWaitingTimesInRun fun has to be tested for different types of prob
 	# is not tested till now
 	def genWaitingTimesInRun( self,
@@ -119,10 +125,17 @@ class Run:
 		# In case of flooding it is like calling overallInterNodeCommInRun
 		pass
 
+class FloodRun( Run ):
+	pass
+
+class ConsRun( Run ):
+	pass
+
 class Analysis:
 	coStr = CommonValStrings()
-	def __init__( self, sheetReader ):
+	def __init__( self, sheetReader, tpe ):
 		self.sheet = sheetReader
+		self.typ = tpe
 		self.runList = self.runRanges()	#when in consistent state each element will have component firstRow and lastRowEx
 
 	def printRunList( self ):
@@ -156,7 +169,7 @@ class Analysis:
 			start = lis[i] + 1
 			endEx = lis[i+1] if i < len(lis) - 1 else self.lastRunLastLimit()
 			#create objects or dictionary and append in list member
-			templis.append( Run( self.sheet, start, endEx ) )
+			templis.append( Run.factory( self.sheet, start, endEx, self.typ ) )
 		return templis
 
 	def cleanup( self ):
@@ -166,7 +179,7 @@ class Analysis:
 		self.sheet.cleanup()
 
 def main():
-	floana = Analysis(SheetReader( 'data.csv' ))
+	floana = Analysis(SheetReader( 'data.csv' ), 'FloodRun')
 	# floana.printRunList()
 	# floana.printRunList()
 	# for tup in floana.runList[0].genWaitingTimesInRun() :
