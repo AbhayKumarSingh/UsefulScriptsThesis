@@ -88,7 +88,7 @@ class Run:
 			yield probRow[nodeCol], waitingTime
 			# append (create) a list of this diff along with nodes
 
-	# averageWaitingTimeOfRun may not be that usefull as a parameter
+	# averageWaitingTimeOfRun may not be that useful as a parameter
 	def averageWaitingTimeOfRun( self ):
 		# The following implementation can be improved from memory point of view
 		return mean(waitTime for ignore, waitTime in self.genWaitingTimesInRun())
@@ -107,7 +107,7 @@ class Run:
 	def overallUsefulIntraNodeCompInRun( self ):
 		# May be to be overridden by subclasses
 		# In case of flooding it is like calling overallIntraNodeCompInRun
-		pass
+		return self.overallIntraNodeCompInRun()
 
 	def overallInterNodeCommInRun( self ):
 		return sum(
@@ -123,7 +123,7 @@ class Run:
 	def overallUsefulInterNodeCommInRun( self ):
 		# May be to be overridden by subclasses
 		# In case of flooding it is like calling overallInterNodeCommInRun
-		pass
+		return self.overallInterNodeCommInRun()
 
 class FloodRun( Run ):
 	pass
@@ -141,6 +141,18 @@ class Analysis:
 	def printRunList( self ):
 		for run in self.runList:
 			print( run.firstRow, run.lastRowEx )
+
+	def avgOfAvgOfWaitTimes( self ):
+		return mean(aRun.averageWaitingTimeOfRun() for aRun in self.runList)
+
+	def notAvgOfAvgOfWaitTimes( self ):
+		pass
+
+	def avgOfOvAllUsefulComps( self ):
+		return mean(aRun.overallUsefulIntraNodeCompInRun() for aRun in self.runList)
+
+	def avgOfOvallUsefulCommun( self ):
+		return mean(aRun.overallUsefulInterNodeCommInRun() for aRun in self.runList)
 
 	def listInitRowIndices( self ):
 		#scan throughout the file and find times and index of init
@@ -185,7 +197,10 @@ def main():
 	# for tup in floana.runList[0].genWaitingTimesInRun() :
 	# 	print( tup )
 	# print( floana.runList[0].averageWaitingTimeOfRun())
-	print( floana.runList[0].overallInterNodeCommInRun())
+	# print( floana.runList[0].overallInterNodeCommInRun())
+	# print( floana.avgOfAvgOfWaitTimes())
+	print( floana.avgOfOvAllUsefulComps())
+	print( floana.avgOfOvallUsefulCommun())
 	floana.cleanup()
 
 def main2():
