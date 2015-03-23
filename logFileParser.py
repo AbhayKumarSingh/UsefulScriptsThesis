@@ -190,7 +190,39 @@ class Analysis:
 		self.runList = None
 		self.sheet.cleanup()
 
+def filePathAndTypeBuilder():
+	yield ('data.csv','FloodRun'), ('data2.csv','ConsRun')
+	yield ('data3.csv','FloodRun'), ('data4.csv','ConsRun')
+
+def printlist( lis ):
+	for i in lis:
+		print( i )
+
 def main():
+	waitListForGraph = []
+	CompsListForGraph = []
+	CommunListForGraph = []
+	for compr in filePathAndTypeBuilder():
+		waitTimeCompr = []
+		avgCompsCompr = []
+		avgCommunCompr = []
+		for alog in compr:
+			ana = Analysis(SheetReader( alog[0] ), alog[1] )
+			waitTimeCompr.append(ana.avgOfAvgOfWaitTimes())
+			avgCompsCompr.append(ana.avgOfOvAllUsefulComps())
+			avgCommunCompr.append(ana.avgOfOvallUsefulCommun())
+			ana.cleanup()
+		waitListForGraph.append(waitTimeCompr)
+		CompsListForGraph.append(avgCompsCompr)
+		CommunListForGraph.append(avgCommunCompr)
+	print('waitListForGraph')
+	printlist(waitListForGraph)
+	print('CompsListForGraph')
+	printlist(CompsListForGraph)
+	print('CommunListForGraph')
+	printlist(CommunListForGraph)
+
+def test():
 	floana = Analysis(SheetReader( 'data.csv' ), 'FloodRun')
 	# floana.printRunList()
 	# floana.printRunList()
@@ -202,13 +234,5 @@ def main():
 	print( floana.avgOfOvAllUsefulComps())
 	print( floana.avgOfOvallUsefulCommun())
 	floana.cleanup()
-
-def main2():
-	sheet = SheetReader('data.csv')
-	print( sheet.totalNumRows )
-	#print( sheet.lineNoByteList )
-	#print( sheet.retRow(5300) )
-	print( sheet.retCell(5300,-4) )
-	sheet.cleanup()
 
 if __name__ == '__main__' : main()

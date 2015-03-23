@@ -1,4 +1,4 @@
 *.class
 afile.txt
-data.csv
+*.csv
 test.py
