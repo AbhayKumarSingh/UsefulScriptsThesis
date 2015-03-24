@@ -1,5 +1,6 @@
 #!C:/Python34/python.exe
 import csv
+import os
 import itertools
 from statistics import mean
 
@@ -198,7 +199,15 @@ def printlist( lis ):
 	for i in lis:
 		print( i )
 
+def writeInCsv( filename, rows ):
+	with open( filename, 'w', newline='' ) as f:
+		wri = csv.writer(f)
+		wri.writerows(rows)
+
 def main():
+	outputDir = 'out/out5'
+	if not os.path.exists(outputDir):
+		os.makedirs(outputDir)
 	waitListForGraph = []
 	CompsListForGraph = []
 	CommunListForGraph = []
@@ -216,11 +225,11 @@ def main():
 		CompsListForGraph.append(avgCompsCompr)
 		CommunListForGraph.append(avgCommunCompr)
 	print('waitListForGraph')
-	printlist(waitListForGraph)
+	writeInCsv( outputDir + '/waitlist.csv', waitListForGraph )
 	print('CompsListForGraph')
-	printlist(CompsListForGraph)
+	writeInCsv( outputDir + '/comput.csv', CompsListForGraph )
 	print('CommunListForGraph')
-	printlist(CommunListForGraph)
+	writeInCsv( outputDir + '/communi.csv', CommunListForGraph )
 
 def test():
 	floana = Analysis(SheetReader( 'data.csv' ), 'FloodRun')
