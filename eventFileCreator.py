@@ -125,6 +125,11 @@ class WriteInFile:
 	def handleProb(self, index, numOfTimes, nodeList, instant ):
 		return self.toBeDoneInInst( 'prob', numOfTimes, nodeList, instant )
 
+	def handleInit(self, index, instant ):
+		# In the following function call only the init is important
+		# Other arguments are useless
+		return self.toBeDoneInInst( 'init', 0, 0, instant )
+
 	def cleanup( self ):
 		self.fileHandle.close()
 
@@ -144,11 +149,6 @@ class FloodFile( WriteInFile ):
 		else:
 			print( 'something wrong in getDataToAttach' )
 
-	def handleInit(self, index, instant ):
-		# In the following function call only the init is important
-		# Other arguments are useless
-		return self.toBeDoneInInst( 'init', 0, 0, instant )
-
 	def handleSol(self, index, numOfTimes, nodeList, instant ):
 		return self.toBeDoneInInst( 'sol', numOfTimes, nodeList, instant )
 
@@ -160,14 +160,6 @@ class ConsFile( WriteInFile ):
 			return '-1'
 		else:
 			print( 'something wrong in getDataToAttach' )
-
-	def handleInit(self, index, instant ):
-		if index == 0 :
-			# In the following function call only the init is important
-			# Other arguments are useless
-			return self.toBeDoneInInst( 'init', 0, 0, instant )
-		else :
-			return ''
 
 	def handleSol(self, index, numOfTimes, nodeList, instant ):
 		if index == 1 :
