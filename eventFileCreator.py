@@ -62,6 +62,7 @@ class WriteInFile:
 		'\t]\n).'
 		self.fileHandle.write( stringToWritten )
 
+	# this fun removes last comma. This is different from trailing comma
 	def removeLastComma( self, aString ):
 		lastCommaIndex = aString.rfind(',')
 		if lastCommaIndex != -1 :
@@ -122,8 +123,8 @@ class WriteInFile:
 	def prepPacket( self, sol ):
 		stringToWritten = ''
 		for rep in range(sol[2]):
-			stringToWritten += sol[1] + ','
-		return self.removeLastComma( stringToWritten )
+			stringToWritten += sol[1]
+		return stringToWritten
 
 	def handleProb(self, index, numOfTimes, nodeList, instant ):
 		return self.toBeDoneInInst( 'prob', numOfTimes, nodeList, instant )
