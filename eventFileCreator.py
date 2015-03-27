@@ -59,7 +59,7 @@ class WriteInFile:
 		self.mySolPart() +\
 		'events(\n\t[\n' +\
 		self.eventsAtInstances() +\
-		'\t]\n).'
+		'\t]\n).\n'
 		self.fileHandle.write( stringToWritten )
 
 	# this fun removes last comma. This is different from trailing comma
