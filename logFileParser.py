@@ -50,6 +50,7 @@ class CommonValStrings:
 	problemStartedAtString = 'Problem started at'
 	foundSolutionAtString = 'Solution found for'
 	receivedSolutionAtString = 'Solution received at'
+	eoEString = 'End of Experiment'
 
 class Run:
 	coStr = CommonValStrings()
@@ -171,7 +172,11 @@ class Analysis:
 	def lastRunLastLimit( self ):
 		#It may be required to change the following code for mobile agent case
 		#There is a possibility of this being an attribute
-		return self.sheet.totalNumRows
+		for i, ignore in self.sheet.genStringRowIndicesInRange(
+				self.coStr.eoEString,
+				self.coStr.eventCol,
+				1, self.sheet.totalNumRows ):
+			return i
 
 	def runRanges( self ):
 		#first find the init points

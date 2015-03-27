@@ -83,6 +83,8 @@ class WriteInFile:
 		accum = 0
 		if event == 'init' :
 			return '\t\t\t\t( init, a, b, fun )\n'
+		if event == 'end' :
+			return '\t\t\t\t( end, a, b, fun )\n'
 		for issueType, times in enumerate(numOfTimes) :
 			for i in range(times) :
 				innerString += '\t\t\t\t(' + \
@@ -111,6 +113,7 @@ class WriteInFile:
 				strcomp += self.handleProb( index, numOfTimes, nodeList, instant )
 			else :
 				print( 'not valid signature' )
+		strcomp += self.toBeDoneInInst( 'end', 'notImp', 'notImp', instant + timeBwTwoFresh )
 		return (self.removeLastComma( strcomp ))
 
 	def mySolPart( self ):
