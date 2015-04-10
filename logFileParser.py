@@ -77,6 +77,7 @@ class Run:
 				self.coStr.eventCol,
 				self.firstRow, self.lastRowEx ):
 			# search the solution received row after the row prob started
+			solFound = False
 			for solRowIndex, solRow in self.sheet.genStringRowIndicesInRange(
 					self.coStr.receivedSolutionAtString,
 					self.coStr.eventCol,
@@ -84,10 +85,12 @@ class Run:
 				if (solRow[nodeCol] == probRow[nodeCol]
 				and solRow[solReceiTypeCol] == probRow[proStartTypeCol]) :
 					actualSol = solRow
+					solFound = True
 					break;
 			# get the diff in time
-			waitingTime = float(actualSol[self.coStr.timeCol]) - float(probRow[self.coStr.timeCol])
-			yield probRow[nodeCol], waitingTime
+			if solFound == True:
+				waitingTime = float(actualSol[self.coStr.timeCol]) - float(probRow[self.coStr.timeCol])
+				yield probRow[nodeCol], waitingTime
 			# append (create) a list of this diff along with nodes
 
 	# averageWaitingTimeOfRun may not be that useful as a parameter
@@ -197,8 +200,26 @@ class Analysis:
 		self.sheet.cleanup()
 
 def filePathAndTypeBuilder():
-	yield ('data.csv','FloodRun'), ('data2.csv','ConsRun')
-	yield ('data3.csv','FloodRun'), ('data4.csv','ConsRun')
+	yield ('inp/data1.csv','FloodRun'), ('inp/mdata1.csv','ConsRun')
+	yield ('inp/data2.csv','FloodRun'), ('inp/mdata2.csv','ConsRun')
+	yield ('inp/data3.csv','FloodRun'), ('inp/mdata3.csv','ConsRun')
+	yield ('inp/data4.csv','FloodRun'), ('inp/mdata4.csv','ConsRun')
+	yield ('inp/data5.csv','FloodRun'), ('inp/mdata5.csv','ConsRun')
+	yield ('inp/data6.csv','FloodRun'), ('inp/mdata6.csv','ConsRun')
+	yield ('inp/data7.csv','FloodRun'), ('inp/mdata7.csv','ConsRun')
+	yield ('inp/data8.csv','FloodRun'), ('inp/mdata8.csv','ConsRun')
+	yield ('inp/data9.csv','FloodRun'), ('inp/mdata9.csv','ConsRun')
+	yield ('inp/data10.csv','FloodRun'), ('inp/mdata10.csv','ConsRun')
+	yield ('inp/data11.csv','FloodRun'), ('inp/mdata11.csv','ConsRun')
+	yield ('inp/data12.csv','FloodRun'), ('inp/mdata12.csv','ConsRun')
+	yield ('inp/data13.csv','FloodRun'), ('inp/mdata13.csv','ConsRun')
+	yield ('inp/data14.csv','FloodRun'), ('inp/mdata14.csv','ConsRun')
+	yield ('inp/data15.csv','FloodRun'), ('inp/mdata15.csv','ConsRun')
+	yield ('inp/data16.csv','FloodRun'), ('inp/mdata16.csv','ConsRun')
+	yield ('inp/data17.csv','FloodRun'), ('inp/mdata17.csv','ConsRun')
+	yield ('inp/data18.csv','FloodRun'), ('inp/mdata18.csv','ConsRun')
+	yield ('inp/data19.csv','FloodRun'), ('inp/mdata19.csv','ConsRun')
+	yield ('inp/data20.csv','FloodRun'), ('inp/mdata20.csv','ConsRun')
 
 def printlist( lis ):
 	for i in lis:
