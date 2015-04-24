@@ -175,6 +175,10 @@ class Analysis:
 	def lastRunLastLimit( self ):
 		#It may be required to change the following code for mobile agent case
 		#There is a possibility of this being an attribute
+		# Efficiency can be improved by searching from the end to the beginning
+		# The code based on type may be changed using polymorphism later.
+		if self.typ == 'FloodRun' :
+			return self.sheet.totalNumRows
 		for i, ignore in self.sheet.genStringRowIndicesInRange(
 				self.coStr.eoEString,
 				self.coStr.eventCol,

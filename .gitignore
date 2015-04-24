@@ -3,3 +3,5 @@ afile.txt
 *.csv
 test.py
 tags
+__pycache__
+*.xlsx
