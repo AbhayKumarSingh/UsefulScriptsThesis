@@ -25,6 +25,13 @@ class SheetReader:
 			if self.retCell(i,col) == string :
 				yield i, self.retRow(i)
 
+	# genStringRowIndicesInRevRange will do genStringRowIndicesInRange
+	# but in reverse direction; hence can be faster in appropriate cases
+	def genStringRowIndicesInRevRange( self, string, col, start, endEx ):
+		for i in range(endEx-1, start-1, -1):
+			if self.retCell(i,col) == string :
+				yield i, self.retRow(i)
+
 	def retRow( self, number ):
 		var = self.filehandle.tell()
 		byteNum = self.lineNoByteList[number]
@@ -109,11 +116,6 @@ class Run:
 			)
 		)
 
-	def overallUsefulIntraNodeCompInRun( self ):
-		# May be to be overridden by subclasses
-		# In case of flooding it is like calling overallIntraNodeCompInRun
-		return self.overallIntraNodeCompInRun()
-
 	def overallInterNodeCommInRun( self ):
 		return sum(
 			1
@@ -125,16 +127,54 @@ class Run:
 			)
 		)
 
+class FloodRun( Run ):
+	def overallUsefulIntraNodeCompInRun( self ):
+		return self.overallIntraNodeCompInRun()
+
 	def overallUsefulInterNodeCommInRun( self ):
-		# May be to be overridden by subclasses
-		# In case of flooding it is like calling overallInterNodeCommInRun
 		return self.overallInterNodeCommInRun()
 
-class FloodRun( Run ):
-	pass
-
 class ConsRun( Run ):
-	pass
+	def __init__( self, sheetH, first, lastEx):
+		super().__init__(sheetH, first, lastEx)
+		# Searching for the first problem row in the run
+		for index, ignore in self.sheet.genStringRowIndicesInRange(
+				self.coStr.problemStartedAtString,
+				self.coStr.eventCol,
+				self.firstRow, self.lastRowEx ):
+			self.firstUsefulRow = index
+			break
+		# Searching for the last sol row in the run
+		for index, ignored in self.sheet.genStringRowIndicesInRevRange(
+				self.coStr.receivedSolutionAtString,
+				self.coStr.eventCol,
+				self.firstRow, self.lastRowEx ):
+			# I want to be last row with solution included for
+			# further analysis
+			self.lastUsefulRowEx = index + 1
+			break
+
+	def overallUsefulIntraNodeCompInRun( self ):
+		return sum(
+			1
+			for ignored1, ignored2
+			in self.sheet.genStringRowIndicesInRange(
+				self.coStr.intranodeCalculationString,
+				self.coStr.eventCol,
+				self.firstUsefulRow, self.lastUsefulRowEx
+			)
+		)
+
+	def overallUsefulInterNodeCommInRun( self ):
+		return sum(
+			1
+			for ignored1, ignored2
+			in self.sheet.genStringRowIndicesInRange(
+				self.coStr.packetSentFromString,
+				self.coStr.eventCol,
+				self.firstUsefulRow, self.lastUsefulRowEx
+			)
+		)
 
 class Analysis:
 	coStr = CommonValStrings()
@@ -179,7 +219,7 @@ class Analysis:
 		# The code based on type may be changed using polymorphism later.
 		if self.typ == 'FloodRun' :
 			return self.sheet.totalNumRows
-		for i, ignore in self.sheet.genStringRowIndicesInRange(
+		for i, ignore in self.sheet.genStringRowIndicesInRevRange(
 				self.coStr.eoEString,
 				self.coStr.eventCol,
 				1, self.sheet.totalNumRows ):
