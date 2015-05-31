@@ -5,3 +5,5 @@ test.py
 tags
 __pycache__
 *.xlsx
+recentlog.txt
+logFileParsDriver.py

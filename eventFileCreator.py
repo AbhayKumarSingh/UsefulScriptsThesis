@@ -5,6 +5,7 @@ import random
 flooding = '../test/event1.pl'
 conscientious = '../test/event2.pl'
 totalNumNodes = 25
+topology = 'g'
 # The following generally variables represent from the point of flooding. Conscientious must be done accordingly.
 availableSol = (('type2','a',30),('type3','b',30))
 # In case of 's' and 'p' below the preceding numbers denotes number of 's' or 'p' for each type in order
@@ -56,11 +57,22 @@ class WriteInFile:
 		stringToWritten += ':-dynamic prevInst/1.\n' +\
 		':-dynamic thingstobedone/1.\n' +\
 		':-dynamic pos/1.\n' +\
+		'outputFileName(' + self.csvFileName() + ').\n' +\
 		self.mySolPart() +\
 		'events(\n\t[\n' +\
 		self.eventsAtInstances() +\
 		'\t]\n).\n'
 		self.fileHandle.write( stringToWritten )
+
+	# Currently (20May15) csvFileName handles homogeneous case
+	def csvFileName( self ):
+		astring = ''
+		astring += self.idchar() + topology +\
+		't' + str( totalNumNodes ) + 'n' +\
+		str( pattern[1][0] ) + 's' +\
+		str( pattern[2][0] ) + 'p'
+		return astring
+
 
 	# this fun removes last comma. This is different from trailing comma
 	def removeLastComma( self, aString ):
@@ -138,6 +150,9 @@ class WriteInFile:
 		self.fileHandle.close()
 
 class FloodFile( WriteInFile ):
+	def idchar( self ):
+		return 'f'
+
 	def mySolPart( self ):
 		stringToWritten = ''
 		for sol in availableSol:
@@ -157,6 +172,9 @@ class FloodFile( WriteInFile ):
 		return self.toBeDoneInInst( 'sol', numOfTimes, nodeList, instant )
 
 class ConsFile( WriteInFile ):
+	def idchar( self ):
+		return 'c'
+
 	def getDataToAttach( self, event, issueType ):
 		if event == 'startagent':
 			return self.prepPacket( availableSol[issueType] )
