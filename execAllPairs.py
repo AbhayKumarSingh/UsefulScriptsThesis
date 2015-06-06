@@ -38,15 +38,15 @@ def processCsv():
 def executePossiblities():
 	eventFileCreator.flooding = 'E:/Typhon Test-bed/events.pl'
 	eventFileCreator.conscientious = 'E:/MobileAgentPart/events.pl'
-	eventFileCreator.totalNumNodes = 16
+	eventFileCreator.totalNumNodes = 25
 	eventFileCreator.topology = 'g'
 	eventFileCreator.availableSol = (('type2','a',5000),)
 	eventFileCreator.pattern = (('i',),(8,'s'),(1,'p'))
 	eventFileCreator.timeGaps = (0,4000,3000)
 	eventFileCreator.originTime = 0
 	eventFileCreator.reps = 5
-	eventFileCreator.timeBwTwoFresh = 10000
-	for numOfSol, numOfProb in genPairSolProb( 8, 4, 16 ):
+	eventFileCreator.timeBwTwoFresh = 20000
+	for numOfSol, numOfProb in genPairSolProb( 11, 1, 25, 2 ):
 		print( numOfSol, numOfProb)
 		eventFileCreator.pattern = (('i',),(numOfSol,'s'),(numOfProb,'p'))
 		# create the event file
@@ -67,19 +67,19 @@ def executePossiblities():
 # and prob nodes does not exceed totalNum. The generator assumes solNodeStart and/or
 # probNodeStart are greater than zero. You can also set maximum number of problem node
 # and solution node possible.
-def genPairSolProb( solNodeStart, probNodeStart, totalNum,
+def genPairSolProb( solNodeStart, probNodeStart, totalNum, ires=1,
 			maxProb=float('inf'), maxSol=float('inf')):
 	if solNodeStart > maxSol :
 		return
-	for numOfProb in range( probNodeStart, totalNum - solNodeStart + 1 ):
+	for numOfProb in range( probNodeStart, totalNum - solNodeStart + 1, ires ):
 		if numOfProb > maxProb :
 			break
 		yield( solNodeStart, numOfProb )
 
-	for numOfSol in range( solNodeStart + 1, totalNum ):
+	for numOfSol in range( solNodeStart + ires, totalNum, ires ):
 		if numOfSol > maxSol :
 			break
-		for numOfProb in range( 1, totalNum - numOfSol + 1 ):
+		for numOfProb in range( 1, totalNum - numOfSol + 1, ires ):
 			if numOfProb > maxProb :
 				break
 			yield( numOfSol, numOfProb )
