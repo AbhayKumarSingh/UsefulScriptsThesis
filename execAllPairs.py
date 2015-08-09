@@ -38,7 +38,7 @@ def processCsv():
 def executePossiblities():
 	eventFileCreator.flooding = 'E:/Typhon Test-bed/events.pl'
 	eventFileCreator.conscientious = 'E:/MobileAgentPart/events.pl'
-	eventFileCreator.totalNumNodes = 25
+	eventFileCreator.totalNumNodes = 36
 	eventFileCreator.topology = 'g'
 	eventFileCreator.availableSol = (('type2','a',5000),)
 	eventFileCreator.pattern = (('i',),(8,'s'),(1,'p'))
@@ -46,9 +46,15 @@ def executePossiblities():
 	eventFileCreator.originTime = 0
 	eventFileCreator.reps = 5
 	eventFileCreator.timeBwTwoFresh = 20000
-	for numOfSol, numOfProb in genPairSolProb( 11, 1, 25, 2 ):
+	for numOfSol, numOfProb in genPairSolProb( 19, 10, 36, 3 ):
 		print( numOfSol, numOfProb)
 		eventFileCreator.pattern = (('i',),(numOfSol,'s'),(numOfProb,'p'))
+		if numOfProb <= 15 :
+			eventFileCreator.timeBwTwoFresh = 20000
+		elif numOfProb <= 25 :
+			eventFileCreator.timeBwTwoFresh = 40000
+		else :
+			eventFileCreator.timeBwTwoFresh = 400000
 		# create the event file
 		eventFileCreator.main()
 		originalPath = os.getcwd()
@@ -85,3 +91,8 @@ def genPairSolProb( solNodeStart, probNodeStart, totalNum, ires=1,
 			yield( numOfSol, numOfProb )
 
 if __name__ == '__main__': executePossiblities()
+# if __name__ == '__main__':
+# 	originalPath = os.getcwd()
+# 	os.chdir('E:/MobileAgentPart')
+# 	processCsv()
+# 	os.chdir( originalPath )

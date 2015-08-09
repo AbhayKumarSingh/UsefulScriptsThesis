@@ -2,18 +2,29 @@
 import os
 import random
 
-flooding = '../test/event1.pl'
-conscientious = '../test/event2.pl'
-totalNumNodes = 25
+# flooding = '../test/event1.pl'
+# conscientious = '../test/event2.pl'
+# totalNumNodes = 25
+# topology = 'g'
+# # The following generally variables represent from the point of flooding. Conscientious must be done accordingly.
+# availableSol = (('type2','a',30),('type3','b',30))
+# # In case of 's' and 'p' below the preceding numbers denotes number of 's' or 'p' for each type in order
+# pattern = (('i',),(3,2,'s'),(3,2,'p'))
+# timeGaps = (0,4000,1000)
+# originTime = 0
+# reps = 3
+# timeBwTwoFresh = 10000
+
+flooding = 'E:/Typhon Test-bed/events.pl'
+conscientious = 'E:/MobileAgentPart/events.pl'
+totalNumNodes = 36
 topology = 'g'
-# The following generally variables represent from the point of flooding. Conscientious must be done accordingly.
-availableSol = (('type2','a',30),('type3','b',30))
-# In case of 's' and 'p' below the preceding numbers denotes number of 's' or 'p' for each type in order
-pattern = (('i',),(3,2,'s'),(3,2,'p'))
-timeGaps = (0,4000,1000)
+availableSol = (('type2','a',5000),)
+pattern = (('i',),(1,'s'),(15,'p'))
+timeGaps = (0,4000,3000)
 originTime = 0
-reps = 3
-timeBwTwoFresh = 10000
+reps = 5
+timeBwTwoFresh = 20000
 
 class WriteInFile:
 	randomList = None
